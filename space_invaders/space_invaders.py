@@ -10,3 +10,11 @@ display_size = (display_width, display_height)
 
 # создаем окно
 pygame.display.set_mode(display_size)
+
+# флаг, что приложение работает
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+

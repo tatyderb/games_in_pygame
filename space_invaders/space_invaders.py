@@ -10,6 +10,7 @@ display_size = (display_width, display_height)
 
 # создаем окно
 pygame.display.set_mode(display_size)
+pygame.display.set_caption('Space Invaders')
 
 # флаг, что приложение работает
 running = True

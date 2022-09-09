@@ -26,7 +26,7 @@ player_x = display_width // 2 - player_width // 2   # будет потом ме
 player_y = display_height - player_height - player_gap
 # print(f'{player_x=} {player_y=}')
 player_speed = 1
-player_dx = player_speed
+player_dx = 0
 
 
 def model_update():
@@ -43,14 +43,28 @@ def display_update():
     pygame.display.update()
 
 
+def event_close_application(event):
+    """Закрываем окно по нажатию крестика"""
+    running = event.type == pygame.QUIT
+    return running
+
+def event_player(event):
+    """Вправо-влево по нажатию стрелок и a, d;"""
+    global player_dx
+    if event.type == pygame.KEYDOWN:
+        if event.key in (pygame.K_LEFT, pygame.K_a):
+            player_dx = -player_speed
+        if event.key in (pygame.K_RIGHT, pygame.K_d):
+            player_dx = player_speed
+
+
 def event_process():
     """Обрабатывает события клавиатуры и мыши, возвращает False, если приложение хотят закрыть."""
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        event_player(event)
+        if event_close_application(event):
             return False
-
     return True
-
 
 # флаг, что приложение работает
 running = True

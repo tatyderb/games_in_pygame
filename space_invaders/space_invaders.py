@@ -1,4 +1,5 @@
 import pygame as pygame
+
 print(pygame.version.ver)
 
 pygame.init()
@@ -27,16 +28,37 @@ player_y = display_height - player_height - player_gap
 player_speed = 1
 player_dx = player_speed
 
-# флаг, что приложение работает
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
 
+def model_update():
+    """Обновляет позицию игрока, врагов, пуль и тп."""
+    global player_x
     player_x += player_dx
 
+
+def display_update():
+    """Перерисовывает все элементы"""
     display.fill('black', (0, 0, display_width, display_height))
     display.blit(player_img, (player_x, player_y))
 
     pygame.display.update()
+
+
+def event_process():
+    """Обрабатывает события клавиатуры и мыши, возвращает False, если приложение хотят закрыть."""
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return False
+
+    return True
+
+
+# флаг, что приложение работает
+running = True
+while running:
+    model_update()
+    display_update()
+    running = event_process()
+
+
+
+

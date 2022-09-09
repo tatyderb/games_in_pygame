@@ -57,6 +57,11 @@ def event_player(event):
         if event.key in (pygame.K_RIGHT, pygame.K_d):
             player_dx = player_speed
 
+    if event.type == pygame.KEYUP:
+        if event.key in (pygame.K_LEFT, pygame.K_RIGHT,
+                         pygame.K_a, pygame.K_d):
+            player_dx = 0
+
 
 def event_process():
     """Обрабатывает события клавиатуры и мыши, возвращает False, если приложение хотят закрыть."""

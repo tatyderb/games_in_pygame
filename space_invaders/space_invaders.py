@@ -8,9 +8,13 @@ display_width = 800
 display_height = 600
 display_size = (display_width, display_height)
 
+# изображения
+icon_img = pygame.image.load('resources/img/ufo.png')
+
 # создаем окно
 pygame.display.set_mode(display_size)
 pygame.display.set_caption('Space Invaders')
+pygame.display.set_icon(icon_img)
 
 # флаг, что приложение работает
 running = True

@@ -24,7 +24,7 @@ player_gap = 30                                     # расстояние от 
 player_x = display_width // 2 - player_width // 2   # будет потом меняться
 player_y = display_height - player_height - player_gap
 # print(f'{player_x=} {player_y=}')
-player_speed = 4
+player_speed = 1
 player_dx = player_speed
 
 # флаг, что приложение работает
@@ -36,6 +36,7 @@ while running:
 
     player_x += player_dx
 
+    display.fill('black', (0, 0, display_width, display_height))
     display.blit(player_img, (player_x, player_y))
 
     pygame.display.update()

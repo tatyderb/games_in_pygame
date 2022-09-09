@@ -64,11 +64,16 @@ def enemy_update():
     """Обновляет позицию врага. Если его нет, создает.
     """
     global enemy_x, enemy_y, enemy_dx, enemy_dy, enemy_alive
+    # вышел за границы экрана - надо создавать нового
+    if enemy_x < 0 or enemy_x + enemy_width > display_width or enemy_y + enemy_height > display_height:
+        enemy_alive = False
+
     if not enemy_alive:
         enemy_x, enemy_y, enemy_dx, enemy_dy = enemy_create()
         enemy_alive = True
     enemy_x += enemy_dx
     enemy_y += enemy_dy
+
 
 
 def model_update():

@@ -24,6 +24,8 @@ player_height = player_img.get_height()
 player_gap = 10
 player_x = display_width // 2 - player_width // 2
 player_y = display_height - player_height - player_gap
+player_speed = 1
+player_dx = player_speed
 
 running = True
 while running:
@@ -31,5 +33,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    player_x = player_x + player_dx
+
+    display.fill((0, 0, 0), (0, 0, display_width, display_height))
     display.blit(player_img, (player_x, player_y))
     pygame.display.update()

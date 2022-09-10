@@ -26,19 +26,42 @@ player_y = display_height - player_height - player_gap
 player_speed = 1
 player_dx = player_speed
 
-
-# флаг, что приложение работает
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # изменение положения объектов
+# изменение положения объектов
+def player_update():
+    global player_x
     player_x += player_dx
 
+def model_update():
+    player_update()
+
+
+# перерисовка объектов
+def display_redraw():
     # рисуем на экране
     display.fill('black', (0, 0, display_width, display_height))
     display.blit(player_img, (player_x, player_y))
     pygame.display.update()
 
+# обработка событий
+def event_player(event):
+    pass
+
+def event_close_application(event):
+    return event.type == pygame.QUIT
+
+
+def event_process():
+    """Обрабатывает события клавиатуры и мыши, возвращает False, если приложение хотят закрыть."""
+    for event in pygame.event.get():
+        event_player(event)
+        if event_close_application(event):
+            return False
+    return True
+
+
+# флаг, что приложение работает
+running = True
+while running:
+    model_update()
+    display_redraw()
+    running = event_process()

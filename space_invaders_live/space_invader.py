@@ -31,6 +31,11 @@ player_dx = 0
 def player_update():
     global player_x
     player_x += player_dx  # player_x = player_x + player_dx
+    # не дадим игроку выходить за пределы окна
+    if player_x < 0:
+        player_x = 0
+    if player_x > display_width - player_width:
+        player_x = display_width - player_width
 
 def model_update():
     player_update()

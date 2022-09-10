@@ -48,6 +48,8 @@ enemy_height = enemy_img.get_height()
 enemy_x, enemy_y = 0, 0
 enemy_dx, enemy_dy = 0, 0
 
+# game over
+game_over_status = False
 
 # обновление моделей
 def player_update():
@@ -65,6 +67,12 @@ def bullet_update():
         return
     bullet_y -= bullet_dy
 
+def collision(x, y, width, height):
+    """враг столкнулся с указанным объектом (передан прямоугольник)"""
+    rect_enemy = pygame.Rect(enemy_x, enemy_y, enemy_width, enemy_height)
+    rect_other = pygame.Rect(x, y, width, height)
+    return rect_enemy.colliderect(rect_other)
+
 def enemy_update():
     global enemy_alive, enemy_x, enemy_y, enemy_dx, enemy_dy
     if not enemy_alive:
@@ -72,6 +80,11 @@ def enemy_update():
     enemy_x += enemy_dx
     enemy_y += enemy_dy
     # print(f'{enemy_alive} : {enemy_x} {enemy_y} {enemy_dx} {enemy_dy}')
+
+    # столкновение с игроком
+    if collision(player_x, player_y, player_width, player_height):
+        enemy_alive = False
+        game_over()
 
 def model_update():
     player_update()
@@ -100,6 +113,10 @@ def enemy_create():
 
     enemy_alive = True
     return x, y, dx, dy
+
+def game_over():
+    global game_over_status
+    game_over_status = True
 
 
 # перерисовки
@@ -139,6 +156,8 @@ def event_process():
     running_status = True
     for event in pygame.event.get():
         running_status = event_quit(event)
+        if game_over_status:
+            continue
         event_player(event)
         event_bullet(event)
     return running_status

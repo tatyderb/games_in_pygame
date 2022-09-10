@@ -5,6 +5,7 @@ pygame.init()
 # загружаем изображения
 player_img = pygame.image.load('resources/img/player.png')
 icon_img = pygame.image.load('resources/img/ufo.png')
+bullet_img = pygame.image.load('resources/img/bullet.png')
 
 
 # размеры окна
@@ -27,6 +28,16 @@ player_y = display_height - player_height - player_gap
 player_speed = 0.5
 player_dx = 0
 
+# пуля
+bullet_alive = False
+bullet_width = bullet_img.get_width()
+bullet_height = bullet_img.get_height()
+bullet_x, bullet_y = 0, 0
+# x, y = y, x
+bullet_dy = 1
+
+
+
 # обновление моделей
 def player_update():
     global player_x
@@ -37,13 +48,24 @@ def player_update():
     if player_x > display_width - player_width:
         player_x = display_width - player_width
 
+
 def model_update():
     player_update()
+
+def bullet_create():
+    global bullet_alive
+    """Создаем пулю над игроком, она летит вертикально вверх"""
+    x = player_x
+    y = player_y - bullet_height
+    bullet_alive = True
+    return x, y
 
 # перерисовки
 def display_redraw():
     display.fill((0, 0, 0), (0, 0, display_width, display_height))
     display.blit(player_img, (player_x, player_y))
+    if bullet_alive:
+        display.blit(bullet_img, (bullet_x, bullet_y))
     pygame.display.update()
 
 # события
@@ -62,11 +84,19 @@ def event_player(event):
     if event.type == pygame.KEYUP:
         player_dx = 0
 
+def event_bullet(event):
+    global bullet_x, bullet_y, bullet_alive
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        key = pygame.mouse.get_pressed()
+        if key[0] and not bullet_alive:
+            bullet_x, bullet_y = bullet_create()
+
 def event_process():
     running_status = True
     for event in pygame.event.get():
         running_status = event_quit(event)
         event_player(event)
+        event_bullet(event)
     return running_status
 
 

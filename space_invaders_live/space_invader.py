@@ -1,11 +1,16 @@
 import pygame
+import random
 
 pygame.init()
+
+# ДЛЯ ОТЛАДКИ, потом убрать
+random.seed(10)
 
 # загружаем изображения
 player_img = pygame.image.load('resources/img/player.png')
 icon_img = pygame.image.load('resources/img/ufo.png')
 bullet_img = pygame.image.load('resources/img/bullet.png')
+enemy_img = pygame.image.load('resources/img/enemy.png')
 
 
 # размеры окна
@@ -36,6 +41,12 @@ bullet_x, bullet_y = 0, 0
 # x, y = y, x
 bullet_dy = 1
 
+# враг
+enemy_alive = False
+enemy_width = enemy_img.get_width()
+enemy_height = enemy_img.get_height()
+enemy_x, enemy_y = 0, 0
+enemy_dx, enemy_dy = 0, 0
 
 
 # обновление моделей
@@ -54,9 +65,18 @@ def bullet_update():
         return
     bullet_y -= bullet_dy
 
+def enemy_update():
+    global enemy_alive, enemy_x, enemy_y, enemy_dx, enemy_dy
+    if not enemy_alive:
+        enemy_x, enemy_y, enemy_dx, enemy_dy = enemy_create()
+    enemy_x += enemy_dx
+    enemy_y += enemy_dy
+    # print(f'{enemy_alive} : {enemy_x} {enemy_y} {enemy_dx} {enemy_dy}')
+
 def model_update():
     player_update()
     bullet_update()
+    enemy_update()
 
 def bullet_create():
     """Создаем пулю над игроком, она летит вертикально вверх"""
@@ -66,6 +86,17 @@ def bullet_create():
     bullet_alive = True
     return x, y
 
+def enemy_create():
+    """Создаем врага в случайном месте, он случайно летит наискосок вниз"""
+    global enemy_alive
+    x = random.randint(0, display_width)
+    y = 30
+
+    dx = random.randint(-2, 3)
+    dy = random.randint(1, 3) / 2
+
+    enemy_alive = True
+    return x, y, dx, dy
 
 
 # перерисовки
@@ -74,6 +105,8 @@ def display_redraw():
     display.blit(player_img, (player_x, player_y))
     if bullet_alive:
         display.blit(bullet_img, (bullet_x, bullet_y))
+    if enemy_alive:
+        display.blit(enemy_img, (enemy_x, enemy_y))
     pygame.display.update()
 
 # события

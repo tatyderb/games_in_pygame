@@ -48,17 +48,25 @@ def player_update():
     if player_x > display_width - player_width:
         player_x = display_width - player_width
 
+def bullet_update():
+    global bullet_y
+    if not bullet_alive:
+        return
+    bullet_y -= bullet_dy
 
 def model_update():
     player_update()
+    bullet_update()
 
 def bullet_create():
-    global bullet_alive
     """Создаем пулю над игроком, она летит вертикально вверх"""
+    global bullet_alive
     x = player_x
     y = player_y - bullet_height
     bullet_alive = True
     return x, y
+
+
 
 # перерисовки
 def display_redraw():

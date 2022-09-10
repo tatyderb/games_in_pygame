@@ -13,6 +13,14 @@ bullet_img = pygame.image.load('resources/img/bullet.png')
 enemy_img = pygame.image.load('resources/img/enemy.png')
 
 
+restart_font = pygame.font.SysFont('None', 32)
+
+def game_over_text():
+    restart_surface = restart_font.render("Press space to restart", True, (255, 0, 0))
+    restart_rect = restart_surface.get_rect(center=(display_width / 2, display_height / 2))
+    display.blit(restart_surface, restart_rect)
+
+
 # размеры окна
 display_width = 800
 display_height = 600
@@ -127,6 +135,8 @@ def display_redraw():
         display.blit(bullet_img, (bullet_x, bullet_y))
     if enemy_alive:
         display.blit(enemy_img, (enemy_x, enemy_y))
+    if game_over_status:
+        game_over_text()
     pygame.display.update()
 
 # события

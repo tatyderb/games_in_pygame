@@ -24,8 +24,8 @@ player_height = player_img.get_height()
 player_gap = 10
 player_x = display_width // 2 - player_width // 2
 player_y = display_height - player_height - player_gap
-player_speed = 1
-player_dx = player_speed
+player_speed = 0.5
+player_dx = 0
 
 # обновление моделей
 def player_update():
@@ -45,10 +45,23 @@ def display_redraw():
 def event_quit(event):
     return event.type != pygame.QUIT
 
+def event_player(event):
+    global player_dx
+    # нажали клавишу
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_LEFT:
+            player_dx = -player_speed
+        elif event.key == pygame.K_RIGHT:
+            player_dx = player_speed
+    # отпустили клавишу
+    if event.type == pygame.KEYUP:
+        player_dx = 0
+
 def event_process():
     running_status = True
     for event in pygame.event.get():
         running_status = event_quit(event)
+        event_player(event)
     return running_status
 
 

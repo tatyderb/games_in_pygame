@@ -52,6 +52,12 @@ def event_player(event):
         if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
             player_dx = player_speed
 
+    # отпускаем эти кнопки и останавливаемся
+    if event.type == pygame.KEYUP:
+        if event.key in (pygame.K_LEFT, pygame.K_RIGHT,
+                         pygame.K_a, pygame.K_d):
+            player_dx = 0
+
 
 def event_close_application(event):
     return event.type == pygame.QUIT

@@ -44,7 +44,14 @@ def display_redraw():
 
 # обработка событий
 def event_player(event):
-    pass
+    """Вправо-влево по нажатию стрелок и a, d;"""
+    global player_dx
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+            player_dx = -player_speed
+        if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+            player_dx = player_speed
+
 
 def event_close_application(event):
     return event.type == pygame.QUIT

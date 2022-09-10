@@ -2,6 +2,11 @@ import pygame
 
 pygame.init()
 
+# загружаем изображения
+player_img = pygame.image.load('resources/img/player.png')
+icon_img = pygame.image.load('resources/img/ufo.png')
+
+
 # размеры окна
 display_width = 800
 display_height = 600
@@ -10,9 +15,10 @@ display_size = (display_width, display_height)
 
 # создаем окно
 display = pygame.display.set_mode(display_size)
+pygame.display.set_caption('Space Invaders')
+pygame.display.set_icon(icon_img)
 
 # игрок
-player_img = pygame.image.load('resources/img/player.png')
 player_width = player_img.get_width()
 player_height = player_img.get_height()
 player_gap = 10

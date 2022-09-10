@@ -23,6 +23,8 @@ player_height = player_img.get_height()
 player_gap = 10                                     # расстояние от игрока до низа окна
 player_x = display_width // 2 - player_width // 2   # будет потом меняться
 player_y = display_height - player_height - player_gap
+player_speed = 1
+player_dx = player_speed
 
 
 # флаг, что приложение работает
@@ -31,6 +33,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    # изменение положения объектов
+    player_x += player_dx
 
     # рисуем на экране
     display.blit(player_img, (player_x, player_y))

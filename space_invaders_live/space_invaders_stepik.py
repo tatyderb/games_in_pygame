@@ -38,6 +38,7 @@ while running:
     player_x += player_dx
 
     # рисуем на экране
+    display.fill('black', (0, 0, display_width, display_height))
     display.blit(player_img, (player_x, player_y))
     pygame.display.update()
 

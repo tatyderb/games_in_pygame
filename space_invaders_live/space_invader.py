@@ -89,11 +89,14 @@ def bullet_create():
 def enemy_create():
     """Создаем врага в случайном месте, он случайно летит наискосок вниз"""
     global enemy_alive
-    x = random.randint(0, display_width)
+    # x = random.randint(0, display_width)
+    x = player_x
     y = 30
 
-    dx = random.randint(-2, 3)
-    dy = random.randint(1, 3) / 2
+    # dx = random.randint(-2, 3)
+    # dy = random.randint(1, 3) / 2
+    dx = 0
+    dy = 0.1
 
     enemy_alive = True
     return x, y, dx, dy

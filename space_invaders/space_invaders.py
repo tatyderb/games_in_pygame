@@ -14,6 +14,7 @@ display_size = (display_width, display_height)
 icon_img = pygame.image.load('resources/img/ufo.png')
 player_img = pygame.image.load('resources/img/player.png')
 enemy_img = pygame.image.load('resources/img/enemy.png')
+bullet_img = pygame.image.load('resources/img/bullet.png')
 
 # создаем окно
 display = pygame.display.set_mode(display_size)
@@ -36,6 +37,13 @@ enemy_width = enemy_img.get_width()
 enemy_height = enemy_img.get_height()
 enemy_x, enemy_y, enemy_dx, enemy_dy = 0, 0, 0, 0
 
+# пуля
+bullet_alive = False
+bullet_width = bullet_img.get_width()
+bullet_height = bullet_img.get_height()
+bullet_x, bullet_y, bullet_dy = 0, 0, 0
+bullet_speed = 5
+
 def enemy_create():
     """Возвращает случайные координаты и скорость для создания врага"""
     x = random.randrange(0, display_width - enemy_width)
@@ -45,6 +53,12 @@ def enemy_create():
     dy = random.randrange(1, 3) / 2
 
     return x, y, dx, dy
+
+def bullet_create():
+    """Возвращает координаты пули"""
+    x = player_x + player_width / 2 - bullet_width / 2
+    y = player_y - bullet_height
+    dy = -bullet_speed
 
 
 def player_update():
@@ -74,11 +88,22 @@ def enemy_update():
     enemy_x += enemy_dx
     enemy_y += enemy_dy
 
+def is_collision(x1, y1, w1, h1, x2, y2, w2, h2):
+    r1 = pygame.Rect(x1, y1, w1, h1)
+    r2 = pygame.Rect(x2, y2, w2, h2)
+    return r1.colliderect(r2)
 
+def bullet_update():
+    global bullet_alive, enemy_alive, bullet_y
+    bullet_y += bullet_dy
+    if is_collision(bullet_x, bullet_y, bullet_width, bullet_height, enemy_x, enemy_y, enemy_width, enemy_height):
+        enemy_alive = False
+        bullet_alive = False
 
 def model_update():
     player_update()
     enemy_update()
+    bullet_update()
 
 def display_redraw():
     """Перерисовывает все элементы"""
@@ -86,6 +111,8 @@ def display_redraw():
     display.blit(player_img, (player_x, player_y))
     if enemy_alive:
         display.blit(enemy_img, (enemy_x, enemy_y, enemy_width, enemy_height))
+    if bullet_alive:
+        display.blit(bullet_img, (bullet_x, bullet_y, bullet_width, bullet_height))
 
     pygame.display.update()
 
@@ -109,10 +136,22 @@ def event_player(event):
             player_dx = 0
 
 
+def event_bullet(event):
+    """Стреляет по нажатию левой кнопки мыши."""
+    global bullet_alive
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        key = pygame.mouse.get_pressed()
+        print(f'{key=} {bullet_alive=}')
+        if key[0] and not bullet_alive:
+            bullet_create()
+            bullet_alive = True
+
+
 def event_process():
     """Обрабатывает события клавиатуры и мыши, возвращает False, если приложение хотят закрыть."""
     for event in pygame.event.get():
         event_player(event)
+        event_bullet(event)
         if event_close_application(event):
             return False
     return True

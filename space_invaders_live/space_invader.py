@@ -27,14 +27,35 @@ player_y = display_height - player_height - player_gap
 player_speed = 1
 player_dx = player_speed
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+# обновление моделей
+def player_update():
+    global player_x
+    player_x += player_dx  # player_x = player_x + player_dx
 
-    player_x = player_x + player_dx
+def model_update():
+    player_update()
 
+# перерисовки
+def display_redraw():
     display.fill((0, 0, 0), (0, 0, display_width, display_height))
     display.blit(player_img, (player_x, player_y))
     pygame.display.update()
+
+# события
+def event_quit(event):
+    return event.type != pygame.QUIT
+
+def event_process():
+    running_status = True
+    for event in pygame.event.get():
+        running_status = event_quit(event)
+    return running_status
+
+
+running = True
+while running:
+    model_update()
+    display_redraw()
+    running = event_process()
+
+

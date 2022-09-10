@@ -28,8 +28,16 @@ player_dx = player_speed
 
 # изменение положения объектов
 def player_update():
+    """Обновляет позицию игрока."""
     global player_x
     player_x += player_dx
+
+    # не дадим игроку выходить за пределы экрана
+    if player_x < 0:
+        player_x = 0
+
+    if player_x + player_width > display_width:
+        player_x = display_width - player_width
 
 def model_update():
     player_update()

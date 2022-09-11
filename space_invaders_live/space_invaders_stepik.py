@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.init()
 
@@ -6,6 +7,7 @@ pygame.init()
 icon_img = pygame.image.load('resources/img/ufo.png')
 player_img = pygame.image.load('resources/img/player.png')
 bullet_img = pygame.image.load('resources/img/bullet.png')
+enemy_img = pygame.image.load('resources/img/enemy.png')
 
 # размеры окна
 display_width = 800
@@ -34,6 +36,27 @@ bullet_height = bullet_img.get_height()
 bullet_x, bullet_y, bullet_dy = 0, 0, 0
 bullet_speed = 5
 
+# враг
+enemy_width = enemy_img.get_width()
+enemy_height = enemy_img.get_height()
+enemy_y_gap = 10    # расстояние до верха окна при создании
+enemy_x, enemy_y, enemy_dx, enemy_dy = 0, 0, 0, 0
+
+
+def enemy_create():
+    """Возвращает случайные координаты и скорость для создания врага"""
+
+    x = random.randrange(0, display_width - enemy_width)
+    y = enemy_y_gap
+
+    dx = random.randrange(-2, 3)
+    dy = random.randrange(1, 3) / 2
+
+    return x, y, dx, dy
+
+
+enemy_x, enemy_y, enemy_dx, enemy_dy = enemy_create()
+
 
 # изменение положения объектов
 def player_update():
@@ -61,9 +84,23 @@ def bullet_update():
         bullet_y += bullet_dy
 
 
+def enemy_update():
+    global enemy_x, enemy_y, enemy_dx, enemy_dy
+    enemy_x += enemy_dx
+    enemy_y += enemy_dy
+
+    # когда выходим за границы окна, убираем текущего
+    # и сразу создаем нового
+    if enemy_x < 0 \
+            or enemy_x + enemy_width > display_width\
+            or enemy_y + enemy_height > display_height:
+        enemy_x, enemy_y, enemy_dx, enemy_dy = enemy_create()
+
+
 def model_update():
     player_update()
     bullet_update()
+    enemy_update()
 
 
 # перерисовка объектов
@@ -73,6 +110,7 @@ def display_redraw():
     display.blit(player_img, (player_x, player_y))
     if bullet_alive:
         display.blit(bullet_img, (bullet_x, bullet_y))
+    display.blit(enemy_img, (enemy_x, enemy_y))
 
     pygame.display.update()
 

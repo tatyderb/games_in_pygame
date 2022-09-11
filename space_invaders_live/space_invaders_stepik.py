@@ -63,6 +63,7 @@ def bullet_update():
 
 def model_update():
     player_update()
+    bullet_update()
 
 
 # перерисовка объектов

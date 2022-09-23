@@ -20,9 +20,8 @@ class Player:
     GAP = 10  # расстояние до низа экрана
     SPEED = 0.5
 
-    def __init__(self, display, size):
-        self.display = display
-        self.display_width, self.display_height = size
+    def __init__(self, bound_size):
+        self.display_width, self.display_height = bound_size
 
         self.img = pygame.image.load(RSC['img']['player'])
         self.width = self.img.get_width()
@@ -40,8 +39,8 @@ class Player:
         if self.x > self.display_width - self.width:
             self.x = self.display_width - self.width
 
-    def redraw(self):
-        self.display.blit(self.img, (self.x, self.y))
+    def redraw(self, display):
+        display.blit(self.img, (self.x, self.y))
 
     def event_process(self, event):
         # нажали клавишу - поехали
@@ -56,19 +55,23 @@ class Player:
 
 
 class Game:
-    def __init__(self, display, size):
-        self.display = display
+    def __init__(self, size):
         self.width, self.height = size
         self.rect = (0, 0, self.width, self.height)
 
-        self.player = Player(display, size)
+        self.player = Player(size)
+        self.enemy = None
 
     def model_update(self):
         self.player.model_update()
+        if self.enemy:
+            self.enemy.model_update()
 
-    def redraw(self):
-        self.display.fill((0, 0, 0), self.rect)
-        self.player.redraw()
+    def redraw(self, display):
+        display.fill((0, 0, 0), self.rect)
+        self.player.redraw(display)
+        if self.enemy:
+            self.enemy.redraw(display)
 
         pygame.display.update()
 
@@ -97,11 +100,11 @@ class Application:
         self.running = True
         clock = pygame.time.Clock()
 
-        game = Game(self.display, self.size)
+        game = Game(self.size)
 
         while self.running:
             game.model_update()
-            game.redraw()
+            game.redraw(self.display)
             for event in pygame.event.get():
                 if self.event_close_application(event):
                     self.running = False

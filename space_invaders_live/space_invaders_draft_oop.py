@@ -16,18 +16,64 @@ RSC = {
 FPS = 60
 
 
-class Game:
-    def __init__(self):
-        pass
+class Player:
+    GAP = 10  # расстояние до низа экрана
+    SPEED = 0.5
+
+    def __init__(self, display, size):
+        self.display = display
+        self.display_width, self.display_height = size
+
+        self.img = pygame.image.load(RSC['img']['player'])
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+
+        self.x = self.display_width // 2 - self.width // 2
+        self.y = self.display_height - self.height - self.GAP
+        self.dx = 0
 
     def model_update(self):
-        pass
+        self.x += self.dx
+        # не дадим игроку выходить за пределы окна
+        if self.x < 0:
+            self.x = 0
+        if self.x > self.display_width - self.width:
+            self.x = self.display_width - self.width
 
     def redraw(self):
-        pass
+        self.display.blit(self.img, (self.x, self.y))
 
     def event_process(self, event):
-        pass
+        # нажали клавишу - поехали
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                self.dx = -Player.SPEED
+            elif event.key == pygame.K_RIGHT:
+                self.dx = Player.SPEED
+        # отпустили клавишу - остановились
+        if event.type == pygame.KEYUP:
+            self.dx = 0
+
+
+class Game:
+    def __init__(self, display, size):
+        self.display = display
+        self.width, self.height = size
+        self.rect = (0, 0, self.width, self.height)
+
+        self.player = Player(display, size)
+
+    def model_update(self):
+        self.player.model_update()
+
+    def redraw(self):
+        self.display.fill((0, 0, 0), self.rect)
+        self.player.redraw()
+
+        pygame.display.update()
+
+    def event_process(self, event):
+        self.player.event_process(event)
 
 
 class Application:
@@ -51,7 +97,7 @@ class Application:
         self.running = True
         clock = pygame.time.Clock()
 
-        game = Game()
+        game = Game(self.display, self.size)
 
         while self.running:
             game.model_update()

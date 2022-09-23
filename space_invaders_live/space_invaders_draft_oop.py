@@ -1,4 +1,5 @@
 import pygame
+import random
 
 RSC = {
     'title': 'Space Invaders',
@@ -13,7 +14,36 @@ RSC = {
     }
 }
 
-FPS = 60
+FPS = 24
+
+
+class Enemy:
+    Y_START_POSITION = 30
+
+    def __init__(self, bound_size):
+        self.display_width, self.display_height = bound_size
+        self.bound_rect = pygame.Rect(0, 0, self.display_width, self.display_height)
+
+        self.img = pygame.image.load(RSC['img']['enemy'])
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+
+        self.x = random.randint(0, self.display_width)
+        self.y = self.Y_START_POSITION
+        self.dx = random.randint(-2, 3) / 10
+        self.dy = random.randint(1, 3) / 10
+
+    def model_update(self):
+        # return in_bounds status
+        self.x += self.dx
+        self.y += self.dy
+        return self.bound_rect.contains(self.x, self.y, self.width, self.height)
+
+    def redraw(self, display):
+        display.blit(self.img, (self.x, self.y))
+
+    def event_process(self, event):
+        pass
 
 
 class Player:
@@ -65,7 +95,11 @@ class Game:
     def model_update(self):
         self.player.model_update()
         if self.enemy:
-            self.enemy.model_update()
+            if not self.enemy.model_update():
+                # вылетел за границы
+                self.enemy = None
+        else:
+            self.enemy = Enemy((self.width, self.height))
 
     def redraw(self, display):
         display.fill((0, 0, 0), self.rect)
@@ -82,6 +116,7 @@ class Game:
 class Application:
     def __init__(self):
         pygame.init()
+        random.seed(10)
 
         self.width = 800
         self.height = 600

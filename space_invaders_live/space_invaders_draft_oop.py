@@ -49,6 +49,7 @@ class Application:
         if self.running:
             return
         self.running = True
+        clock = pygame.time.Clock()
 
         game = Game()
 
@@ -59,6 +60,7 @@ class Application:
                 if self.event_close_application(event):
                     self.running = False
                 game.event_process(event)
+                clock.tick(FPS)
 
     def event_close_application(self, event):
         return event.type == pygame.QUIT

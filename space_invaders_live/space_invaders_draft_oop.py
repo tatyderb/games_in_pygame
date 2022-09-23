@@ -60,8 +60,7 @@ class Application:
                     self.running = False
                 game.event_process(event)
 
-    @staticmethod
-    def event_close_application(event):
+    def event_close_application(self, event):
         return event.type == pygame.QUIT
 
 

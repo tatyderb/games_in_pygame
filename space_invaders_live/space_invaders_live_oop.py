@@ -50,17 +50,58 @@ class Player:
             self.dx = 0
 
 
+class Enemy:
+    DEFAULT_DX = 0
+    DEFAULT_DY = 0.1
+    DEFAULT_Y = 30
+
+    def __init__(self, display_size):
+        self.bound_size = self.bound_width, self.bound_height = display_size
+        self.img = pygame.image.load(RSC['img']['enemy'])
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+        # self.x, self.y, self.dx, self.dy = self.create_at_random_position()
+        self.x, self.y, self.dx, self.dy = self.create_at_center()
+
+    def create_at_center(self):
+        x = self.bound_width // 2 - self.width // 2
+        y = self.DEFAULT_Y
+        dx = self.DEFAULT_DX
+        dy = self.DEFAULT_DY
+        return x, y, dx, dy
+
+    def model_update(self):
+        self.x += self.dx
+        self.y += self.dy
+
+    def into_bounds(self):
+        bound = pygame.Rect(0, 0, self.bound_width, self.bound_height)
+        return bound.contains(self.x, self.y, self.width, self.height)
+
+    def redraw(self, display):
+        display.blit(self.img, (self.x, self.y))
+
+
 class Game:
     def __init__(self, size):
+        self.size = size
         self.player = Player(size)
+        self.enemy = None
 
     def model_update(self):
         self.player.model_update()
+        if self.enemy is None:
+            self.enemy = Enemy(self.size)
+        self.enemy.model_update()
+        if not self.enemy.into_bounds():       # если вышли за границу
+            self.enemy = None
 
     def redraw(self, display, size):
         width, height = size
         display.fill((0, 0, 0), (0, 0, width, height))
         self.player.redraw(display)
+        if self.enemy:
+            self.enemy.redraw(display)
         pygame.display.update()
 
     def event_process(self, event):

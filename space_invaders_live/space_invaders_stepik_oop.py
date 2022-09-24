@@ -156,6 +156,11 @@ class Game:
             # если враг вылетел за экран, он исчез
             self.enemy = None
 
+        # enemy - bullet
+        if self.intersection(self.enemy, self.bullet):
+            self.enemy = None
+            self.bullet = None
+
     def redraw(self, display):
         # заливаем фон
         display.fill((0, 0, 0), self.bound_rect)
@@ -176,6 +181,12 @@ class Game:
     def in_bound(self, rect):
         """Возвращает True если rect в границах экрана"""
         return self.bound_rect.contains(rect)
+
+    @staticmethod
+    def intersection(orect1, orect2):
+        if orect1 is None or orect2 is None:
+            return False
+        return pygame.Rect(orect1.rect()).colliderect(orect2.rect())
 
 
 class Application:

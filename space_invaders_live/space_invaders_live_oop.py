@@ -15,6 +15,20 @@ RSC = {
 }
 
 
+class Game:
+    def __init__(self, size):
+        pass
+
+    def model_update(self):
+        pass
+
+    def redraw(self, display):
+        pass
+
+    def event_process(self):
+        pass
+
+
 class Application:
     def __init__(self):
         pygame.init()
@@ -29,11 +43,14 @@ class Application:
 
     def run(self):
         running = True
+        game = Game(self.size)
         while running:
-
+            game.model_update()
+            game.redraw(self.display)
             for event in pygame.event.get():
                 if self.event_close_application(event):
                     running = False
+                game.event_process()
 
     def event_close_application(self, event):
         return event.type == pygame.QUIT

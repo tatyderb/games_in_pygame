@@ -1,4 +1,5 @@
 import pygame
+import random
 
 RSC = {
     'title': 'Space Invaders',
@@ -60,14 +61,21 @@ class Enemy:
         self.img = pygame.image.load(RSC['img']['enemy'])
         self.width = self.img.get_width()
         self.height = self.img.get_height()
-        # self.x, self.y, self.dx, self.dy = self.create_at_random_position()
-        self.x, self.y, self.dx, self.dy = self.create_at_center()
+        self.x, self.y, self.dx, self.dy = self.create_at_random_position()
+        # self.x, self.y, self.dx, self.dy = self.create_at_center()
 
     def create_at_center(self):
         x = self.bound_width // 2 - self.width // 2
         y = self.DEFAULT_Y
         dx = self.DEFAULT_DX
         dy = self.DEFAULT_DY
+        return x, y, dx, dy
+
+    def create_at_random_position(self):
+        x = random.randint(0, self.bound_width)
+        y = self.DEFAULT_Y
+        dx = random.randint(-2, 3) / 10
+        dy = random.randint(1, 3) / 20
         return x, y, dx, dy
 
     def model_update(self):
@@ -110,6 +118,7 @@ class Game:
 
 class Application:
     def __init__(self):
+        random.seed(10) # убрать во время релиза
         pygame.init()
         # self.width = 800
         # self.height = 600

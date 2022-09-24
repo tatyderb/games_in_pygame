@@ -107,6 +107,9 @@ class Bullet:
         self.y = player_y - self.height
         self.dy = self.DEFAULT_DY
 
+    def rect(self):
+        return pygame.Rect(self.x, self.y, self.width, self.height)
+
     def model_update(self):
         self.y += self.dy
 
@@ -147,6 +150,9 @@ class Game:
             self.bullet.model_update()
             if not self.bullet.into_bounds():       # если вышли за границу
                 self.bullet = None
+            if self.bullet.rect().collidetect(self.enemy.rect()):
+                self.bullet = None
+                self.enemy = None
 
     def redraw(self, display, size):
         width, height = size

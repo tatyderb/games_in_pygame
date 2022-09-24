@@ -90,19 +90,30 @@ class Enemy:
         display.blit(self.img, (self.x, self.y))
 
 
+class Bullet:
+    def __init__(self):
+
+
 class Game:
     def __init__(self, size):
         self.size = size
         self.player = Player(size)
         self.enemy = None
+        self.bullet = None
 
     def model_update(self):
         self.player.model_update()
+
         if self.enemy is None:
             self.enemy = Enemy(self.size)
         self.enemy.model_update()
         if not self.enemy.into_bounds():       # если вышли за границу
             self.enemy = None
+
+        if self.bullet:
+            self.bullet.model_update()
+            if not self.bullet.into_bounds():       # если вышли за границу
+                self.bullet = None
 
     def redraw(self, display, size):
         width, height = size
@@ -110,10 +121,17 @@ class Game:
         self.player.redraw(display)
         if self.enemy:
             self.enemy.redraw(display)
+        if self.bullet:
+            self.bullet.redraw(display)
         pygame.display.update()
 
     def event_process(self, event):
         self.player.event_process(event)
+        # обрабатываю события (пули может еще не быть, поэтому Bullet. метод не объекта, а класса)
+        # может вернуть созданную пулю, если так, то ее сохраняем в self.bullet
+        b = Bullet.event_process(event, self.player.size())
+        if b:
+            self.bullet = b
 
 
 class Application:

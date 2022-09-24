@@ -50,6 +50,9 @@ class Player:
         if event.type == pygame.KEYUP:
             self.dx = 0
 
+    def rect(self):
+        return self.x, self.y, self.width, self.height
+
 
 class Enemy:
     DEFAULT_DX = 0
@@ -91,7 +94,37 @@ class Enemy:
 
 
 class Bullet:
-    def __init__(self):
+    DEFAULT_DY = -1
+
+    def __init__(self, display_size, player_rect):
+        self.bound_size = self.bound_width, self.bound_height = display_size
+
+        player_x, player_y, player_width, player_height = player_rect
+        self.img = pygame.image.load(RSC['img']['bullet'])
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+        self.x = player_x + player_width // 2 - self.width // 2
+        self.y = player_y - self.height
+        self.dy = self.DEFAULT_DY
+
+    def model_update(self):
+        self.y += self.dy
+
+    def into_bounds(self):
+        bound = pygame.Rect(0, 0, self.bound_width, self.bound_height)
+        return bound.contains(self.x, self.y, self.width, self.height)
+
+    def redraw(self, display):
+        display.blit(self.img, (self.x, self.y))
+
+    @classmethod
+    def event_process(cls, event):
+        """ Return True, if press FIRE!!! button. """
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            key = pygame.mouse.get_pressed()
+            if key[0]:
+                return True
+        return False
 
 
 class Game:
@@ -129,14 +162,14 @@ class Game:
         self.player.event_process(event)
         # обрабатываю события (пули может еще не быть, поэтому Bullet. метод не объекта, а класса)
         # может вернуть созданную пулю, если так, то ее сохраняем в self.bullet
-        b = Bullet.event_process(event, self.player.size())
-        if b:
-            self.bullet = b
+        fire = Bullet.event_process(event)
+        if fire and not self.bullet:
+            self.bullet = Bullet(self.size, self.player.rect())
 
 
 class Application:
     def __init__(self):
-        random.seed(10) # убрать во время релиза
+        random.seed(10)    # убрать во время релиза
         pygame.init()
         # self.width = 800
         # self.height = 600

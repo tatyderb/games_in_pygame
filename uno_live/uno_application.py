@@ -1,42 +1,5 @@
-COLORS = ['red', 'green', 'yellow', 'blue']
-NUMBERS = list(range(0, 10)) + list(range(1, 10))
-
-
-class Card:
-    pass
-
-
-class Deck:
-    """Колода карт UNO"""
-    def __init__(self, colors=COLORS, numbers=NUMBERS):
-        self.cards = []
-        for color in colors:
-            for number in numbers:
-                self.cards.append(Card(color, number))
-        # self.cards = [Card(color, number) for color in colors for number in numbers]
-
-    def draw(self, size=1):
-        """Возвращает или список карт длины size, или одну карту, если size=1.
-        Эти карты удаляются из колоды.
-        """
-
-        out = self.cards[:size]
-        self.cards = self.cards[size:]
-        if size == 1:
-            out = out[0]
-        return out
-
-
-class Heap:
-    """Сброс, верхняя карта открыта"""
-    pass
-
-
-class Hand:
-    """Рука игрока"""
-    def __init__(self, cards):
-        self.cards = cards
-
+from card import Card
+from cardlist import Deck, Hand, Heap
 
 class Player:
     def __init__(self, name, cards):

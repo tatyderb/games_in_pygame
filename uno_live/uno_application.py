@@ -5,13 +5,16 @@ from uno_live.player import Player
 class UnoGame:
     DEFAULT_HAND_SIZE = 7
 
-    def __init__(self, player_names, hand_size=DEFAULT_HAND_SIZE):
+    def __init__(self, player_names, hand_size=DEFAULT_HAND_SIZE, deck=None):
         """Подготовка к игре:
         * Каждому игроку сдается 7 карт
         * 1 карта открывается и начинает сброс.
         * остальные карты кладутся в колоду в закрытую
         """
-        self.deck = Deck()
+        if deck is None:
+            self.deck = Deck()
+        else:
+            self.deck = deck
         self.players = [Player(name, self.deck.draw(hand_size)) for name in player_names]
         self.player_index = 0
         self.player_size = len(self.players)
@@ -69,5 +72,10 @@ class UnoGame:
         return self.players[self.player_index]
 
 
-app = UnoGame(['Alice', 'Bob'], hand_size=2)
+# r3 r5 - Alice
+# b1 g2 - Bob
+# g3 - heap
+# y9 - deck
+d = Deck.create_from_string('r3 r5 b1 g2 g3 y9')
+app = UnoGame(['Alice', 'Bob'], hand_size=2, deck=d)
 app.run()

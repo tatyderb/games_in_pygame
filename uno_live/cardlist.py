@@ -86,6 +86,9 @@ class Hand:
     def __repr__(self):
         return ' '.join([str(card) for card in self.cards])
 
+    def __len__(self):
+        return len(self.cards)
+
     def remove(self, removable_card):
         """Удалить карту с руки removable_card"""
         self.cards.remove(removable_card)

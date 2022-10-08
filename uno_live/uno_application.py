@@ -1,6 +1,30 @@
+COLORS = ['red', 'green', 'yellow', 'blue']
+NUMBERS = list(range(0, 10)) + list(range(1, 10))
+
+
+class Card:
+    pass
+
+
 class Deck:
     """Колода карт UNO"""
-    pass
+    def __init__(self, colors=COLORS, numbers=NUMBERS):
+        self.cards = []
+        for color in colors:
+            for number in numbers:
+                self.cards.append(Card(color, number))
+        # self.cards = [Card(color, number) for color in colors for number in numbers]
+
+    def draw(self, size=1):
+        """Возвращает или список карт длины size, или одну карту, если size=1.
+        Эти карты удаляются из колоды.
+        """
+
+        out = self.cards[:size]
+        self.cards = self.cards[size:]
+        if size == 1:
+            out = out[0]
+        return out
 
 
 class Heap:
@@ -22,6 +46,7 @@ class Player:
 
 class UnoGame:
     DEFAULT_HAND_SIZE = 7
+
     def __init__(self, player_names, hand_size=DEFAULT_HAND_SIZE):
         """Подготовка к игре:
         * Каждому игроку сдается 7 карт
@@ -66,7 +91,7 @@ class UnoGame:
                 # подходящая карта, кладем в отбой
                 self.heap.add(card)
 
-        if len(current.hand()) == 0:
+        if len(current.hand) == 0:
             # текущий игрок сборосил все карты, игра закончена
             return False
 

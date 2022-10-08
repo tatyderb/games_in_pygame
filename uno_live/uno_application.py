@@ -31,6 +31,7 @@ class UnoGame:
         self.deck = Deck()
         self.players = [Player(name, self.deck.draw(hand_size)) for name in player_names]
         self.player_index = 0
+        self.player_size = len(self.players)
         self.heap = Heap(self.deck.draw(1))
 
     def run(self):
@@ -65,7 +66,18 @@ class UnoGame:
                 # подходящая карта, кладем в отбой
                 self.heap.add(card)
 
-        return len(current.hand()) == 0
+        if len(current.hand()) == 0:
+            # текущий игрок сборосил все карты, игра закончена
+            return False
+
+        # ход переходит другому игроку
+        # 2: 0 1 0 1 0 1
+        # 3:  0 1 2 0 1 2 0 1 2
+        # +1: 0 1 2 3 4 5 6 7 8
+        # %3: 0 1 2 0 1 2 0 1 2
+        self.player_index = (self.player_index + 1) % self.player_size
+        # игра продолжается
+        return True
 
     def congratulation_winner(self):
         print(f'Игрок {self.current_player().name} победил!')

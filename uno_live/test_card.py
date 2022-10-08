@@ -34,3 +34,13 @@ def test_playable():
     c = Card('green', 2)
     assert not c.playable(t)
 
+
+def test_eq():
+
+    t1 = Card('red', 3)
+    t2 = Card('red', 3)
+    assert(t1 == t2 and t2 == t1)
+
+    c = Card('red', 7)
+    assert(t1 != c and c != t1)
+

@@ -1,4 +1,4 @@
-from .card import Card
+from card import Card
 
 import random
 
@@ -82,3 +82,17 @@ class Hand:
     """Рука игрока"""
     def __init__(self, cards):
         self.cards = cards
+
+    def __repr__(self):
+        return ' '.join([str(card) for card in self.cards])
+
+    def remove(self, removable_card):
+        """Удалить карту с руки removable_card"""
+        self.cards.remove(removable_card)
+
+    def playable_list(self, top):
+        """Возвращает список карт, подходящих для игры на top"""
+        return [card for card in self.cards if card.playable(top)]
+
+    def add(self, card):
+        self.cards.append(card)

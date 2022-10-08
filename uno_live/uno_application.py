@@ -1,10 +1,5 @@
-from card import Card
-from cardlist import Deck, Hand, Heap
-
-class Player:
-    def __init__(self, name, cards):
-        self.name = name
-        self.hand = Hand(cards)
+from cardlist import Deck, Heap
+from uno_live.player import Player
 
 
 class UnoGame:

@@ -11,4 +11,8 @@ class Card:
         """Можно ли играть карту self на карту top"""
         return self.color == top.color or self.number == top.number
 
+    def __eq__(self, other):
+        """Для работы self == other"""
+        return self.color == other.color and self.number == other.number
+
 

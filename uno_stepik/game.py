@@ -7,8 +7,29 @@ class Card:
     pass
 
 
+class Deck:
+    def __init__(self, cards: list[Card]):
+        self.cards = cards
+
+
+class Heap:
+    def __init__(self, cards: list[Card]):
+        self.cards = cards
+
+
+class Hand:
+    def __init__(self, cards: list[Card]):
+        self.cards = cards
+
+
+class Player:
+    def __init__(self, name: str, cards: list[Card]):
+        self.name = name
+        self.hand = Hand(cards)
+
+
 class Game:
-    def __init__(self):
+    def __init__(self) -> Game:
         self.deck = None            # колода
         self.heap = None            # отбой
         self.players = None         # игроки
@@ -38,7 +59,12 @@ class Game:
             'player_index': 0
         }
         """
-        pass
+        game = Game()
+        game.deck = Deck(Card.list_from_str(state['deck']))
+        game.heap = Heap(Card.list_from_str(state['heap']))
+        game.players = [Player(p['name'], Card.list_from_str(p['hand'])) for p in state['players']]
+        game.player_index = state['player_index']
+        return game
 
     def run(self):
         pass

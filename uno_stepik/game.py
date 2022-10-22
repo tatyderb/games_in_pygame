@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import json
 
-
-class Card:
-    pass
+from uno_stepik.card import Card
 
 
 class Deck:

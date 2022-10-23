@@ -1,3 +1,5 @@
+import pytest
+
 from uno_stepik.card import Card
 
 
@@ -40,3 +42,16 @@ def test_list_from_str():
     assert(Card.list_from_str('r1 b4') == [Card('red', 1), Card('blue', 4)])
     assert(Card.list_from_str('g7') == [Card('green', 7)])
     assert(Card.list_from_str('') == [])
+
+
+def test_validate():
+    # неверный цвет
+    with pytest.raises(ValueError):
+        Card('pink', 5)
+    # неправильное число
+    with pytest.raises(ValueError):
+        Card('red', 15)
+
+    # неверный тип числа
+    with pytest.raises(ValueError):
+        Card('red', '5')

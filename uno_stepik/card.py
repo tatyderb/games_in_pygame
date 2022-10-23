@@ -9,7 +9,12 @@ class Card:
     # {'r': 'red', 'g': 'green', 'b': 'blue', 'y': 'yellow'}
     SHORT_FORM = {color[0]: color for color in COLORS}
 
-    def __init__(self, color, number):
+    def __init__(self, color: str, number: int):
+        if color not in Card.COLORS:
+            raise ValueError(f'Invalid color <{color}>')
+        if number not in Card.NUMBERS:
+            raise ValueError(f'Invalid number <{number}>')
+
         self.color = color
         self.number = number
 
@@ -17,7 +22,7 @@ class Card:
         """ Возвращает строку вида r3 """
         return f'{self.color[0]}{self.number}'
 
-    def __eq__(self, other):
+    def __eq__(self, other: Card):
         return self.color == other.color and self.number == other.number
 
     @staticmethod
@@ -31,8 +36,4 @@ class Card:
     def list_from_str(text: str) -> list[Card]:
         """ Из строки 'r3 y5 g0' делает [Card('red', 3), Card('yellow', 5), Card('green', 0)] """
         return [Card.create(s) for s in text.split()]
-
-
-
-
 

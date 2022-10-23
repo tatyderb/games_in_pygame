@@ -17,12 +17,15 @@ class Card:
         """ Возвращает строку вида r3 """
         return f'{self.color[0]}{self.number}'
 
+    def __eq__(self, other):
+        return self.color == other.color and self.number == other.number
+
     @staticmethod
     def create(short_form: str) -> Card:
         """ Из строки 'r3' делает карту Card('red', 3) """
-        color = short_form[0]
+        color_letter = short_form[0]
         number = int(short_form[1])
-        return Card(color, number)
+        return Card(Card.SHORT_FORM[color_letter], number)
 
     @staticmethod
     def list_from_str(text: str) -> list[Card]:

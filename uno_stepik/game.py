@@ -9,15 +9,24 @@ class Deck:
     def __init__(self, cards: list[Card]):
         self.cards = cards
 
+    def __repr__(self):
+        return ' '.join([str(card) for card in self.cards])
+
 
 class Heap:
     def __init__(self, cards: list[Card]):
         self.cards = cards
 
+    def __repr__(self):
+        return ' '.join([str(card) for card in self.cards])
+
 
 class Hand:
     def __init__(self, cards: list[Card]):
         self.cards = cards
+
+    def __repr__(self):
+        return ' '.join([str(card) for card in self.cards])
 
 
 class Player:
@@ -25,13 +34,19 @@ class Player:
         self.name = name
         self.hand = Hand(cards)
 
+    def save(self) -> dict:
+        return {
+            'name': self.name,
+            'hand': repr(self.hand)
+        }
+
 
 class Game:
-    def __init__(self) -> Game:
-        self.deck = None            # колода
-        self.heap = None            # отбой
-        self.players = None         # игроки
-        self.player_index = None    # индекс текущего игрока
+    def __init__(self):
+        self.deck = None  # колода
+        self.heap = None  # отбой
+        self.players = None  # игроки
+        self.player_index = None  # индекс текущего игрока
 
     @staticmethod
     def create(name_list: list[str], cards: list[Card] | None = None) -> Game:
@@ -64,10 +79,15 @@ class Game:
         game.player_index = state['player_index']
         return game
 
-    def run(self):
-        pass
+    def save(self) -> dict:
+        return {
+            'deck': repr(self.deck),
+            'heap': repr(self.heap),
+            'player_index': self.player_index,
+            'players': [p.save() for p in self.players]
+        }
 
-    def save(self):
+    def run(self):
         pass
 
 
@@ -90,5 +110,5 @@ game_state = {
 # game = Game.create(['Bob', 'Charley'])
 # или загружаем состояние игры из game_state
 game = Game.load(game_state)
-print(json.loads(game.save(), indent=4))
+print(json.dumps(game.save(), indent=4))
 # game.run()

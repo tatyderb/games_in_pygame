@@ -12,6 +12,10 @@ class Deck:
     def __repr__(self):
         return ' '.join([str(card) for card in self.cards])
 
+    def draw(self) -> Card:
+        """ Взять 1 карту"""
+        pass
+
 
 class Heap:
     def __init__(self, cards: list[Card]):
@@ -19,6 +23,14 @@ class Heap:
 
     def __repr__(self):
         return ' '.join([str(card) for card in self.cards])
+
+    def top(self) -> Card:
+        """ Верхняя карта """
+        pass
+
+    def add(self, card: Card):
+        """ Положить карту на верх отбоя """
+        pass
 
 
 class Hand:
@@ -39,6 +51,13 @@ class Player:
             'name': self.name,
             'hand': repr(self.hand)
         }
+
+    def get_playable_card(self, top: Card) -> Card | None:
+        pass
+
+    def no_cards(self) -> bool:
+        """ True, если в руке нет карт. """
+        pass
 
 
 class Game:
@@ -88,7 +107,48 @@ class Game:
         }
 
     def run(self):
+        is_running = True
+        while is_running:
+            is_running = self.turn()
+        self.congratulation_winner()
+
+    def turn(self) -> bool:
+        """ Возвращает False, если игра закончена. """
+        # игрок, чей сейчас ход
+        current_player = self.current_player()
+        # верхняя карта отбоя
+        top = self.heap.top()
+        # игрок пытается сыграть карту на отбой
+        card = current_player.get_playable_card(top)
+        if card is not None:
+            self.heap.add(card)
+        else:
+            # Если подходящей карты нет, берет карту из колоды
+            card = self.deck.draw()
+            # Если она подходит, сразу ее играет
+            if card.playable(top):
+                self.heap.add(card)
+
+        # если все карты с руки сыграны, игра окончена
+        if current_player.no_cards():
+            return False
+
+        # Ход переходит другому игроку.
+        self.next_player()
+        # игра продолжается
+        return True
+
+    def congratulation_winner(self):
         pass
+
+    def current_player(self) -> Player:
+        """ Текущий игрок. """
+        return self.players[self.player_index]
+
+    def next_player(self):
+        """ Ход переходит к следующему игроку. """
+        size = len(self.players)
+        self.player_index = (self.player_index + 1) % size
 
 
 game_state = {

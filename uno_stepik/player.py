@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from uno_stepik.card import Card
-from uno_stepik.game import Hand
+from uno_stepik.card_list import Hand
 
 
 class Player:
@@ -20,10 +20,10 @@ class Player:
 
     def get_playable_card(self, top: Card) -> Card | None:
         """ Возвращаем первую подходящую карту для игры на top или None, если подходящих карт нет. """
-        playable = self.hand.playable(top)
-        if not playable:
+        playable_cards = self.hand.playable_cards(top)
+        if not playable_cards:
             return None
-        return playable[0]
+        return playable_cards[0]
 
     def no_cards(self) -> bool:
         """ True, если в руке нет карт. """

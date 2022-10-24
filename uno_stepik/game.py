@@ -3,49 +3,8 @@ from __future__ import annotations
 import json
 
 from uno_stepik.card import Card
+from uno_stepik.card_list import Deck, Heap
 from uno_stepik.player import Player
-
-
-class Deck:
-    def __init__(self, cards: list[Card]):
-        self.cards = cards
-
-    def __repr__(self):
-        return ' '.join([str(card) for card in self.cards])
-
-    def draw(self) -> Card:
-        """ Взять 1 карту"""
-        pass
-
-
-class Heap:
-    def __init__(self, cards: list[Card]):
-        self.cards = cards
-
-    def __repr__(self):
-        return ' '.join([str(card) for card in self.cards])
-
-    def top(self) -> Card:
-        """ Верхняя карта """
-        pass
-
-    def add(self, card: Card):
-        """ Положить карту на верх отбоя """
-        pass
-
-
-class Hand:
-    def __init__(self, cards: list[Card]):
-        self.cards = cards
-
-    def __repr__(self):
-        return ' '.join([str(card) for card in self.cards])
-
-    def __len__(self):
-        return len(self.cards)
-
-    def playable(self, top):
-        pass
 
 
 class Game:
@@ -120,11 +79,12 @@ class Game:
             print('Берет карту из колоды')
             card = self.deck.draw()
             # Если она подходит, сразу ее играет
-            if card.playable(top):
+            if card.playable_cards(top):
                 print(f'Играет {card}')
                 self.heap.add(card)
             else:
                 print('Пас!')
+                self.hand.add(card)
 
         # после розыгрыша карт печатаем руку игрока и разделитель
         print(current_player)

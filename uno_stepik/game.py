@@ -79,12 +79,12 @@ class Game:
             print('Берет карту из колоды')
             card = self.deck.draw()
             # Если она подходит, сразу ее играет
-            if card.playable_cards(top):
+            if card.playable(top):
                 print(f'Играет {card}')
                 self.heap.add(card)
             else:
                 print('Пас!')
-                self.hand.add(card)
+                current_player.add_card_to_hand(card)
 
         # после розыгрыша карт печатаем руку игрока и разделитель
         print(current_player)
@@ -132,4 +132,4 @@ game_state = {
 # или загружаем состояние игры из game_state
 game = Game.load(game_state)
 print(json.dumps(game.save(), indent=4))
-# game.run()
+game.run()

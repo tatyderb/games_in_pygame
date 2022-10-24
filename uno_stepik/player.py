@@ -28,3 +28,6 @@ class Player:
     def no_cards(self) -> bool:
         """ True, если в руке нет карт. """
         return len(self.hand) == 0
+
+    def add_card_to_hand(self, card: Card):
+        self.hand.add(card)

@@ -55,3 +55,12 @@ def test_validate():
     # неверный тип числа
     with pytest.raises(ValueError):
         Card('red', '5')
+
+
+def test_playable():
+    card = Card('red', 4)
+    assert card.playable(Card('red', 4))
+    assert card.playable(Card('red', 3))
+    assert card.playable(Card('red', 8))
+    assert card.playable(Card('blue', 4))
+    assert not card.playable(Card('blue', 8))

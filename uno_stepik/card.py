@@ -25,6 +25,10 @@ class Card:
     def __eq__(self, other: Card):
         return self.color == other.color and self.number == other.number
 
+    def playable(self, top: Card) -> bool:
+        """ Возвращает True, если self можно сыграть на top карту. """
+        return self.color == top.color or self.number == top.number
+
     @staticmethod
     def create(short_form: str) -> Card:
         """ Из строки 'r3' делает карту Card('red', 3) """

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 from uno_stepik.card import Card
+from uno_stepik.player import Player
 
 
 class Deck:
@@ -40,23 +41,10 @@ class Hand:
     def __repr__(self):
         return ' '.join([str(card) for card in self.cards])
 
+    def __len__(self):
+        return len(self.cards)
 
-class Player:
-    def __init__(self, name: str, cards: list[Card]):
-        self.name = name
-        self.hand = Hand(cards)
-
-    def save(self) -> dict:
-        return {
-            'name': self.name,
-            'hand': repr(self.hand)
-        }
-
-    def get_playable_card(self, top: Card) -> Card | None:
-        pass
-
-    def no_cards(self) -> bool:
-        """ True, если в руке нет карт. """
+    def playable(self, top):
         pass
 
 

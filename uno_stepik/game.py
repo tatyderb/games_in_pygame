@@ -118,16 +118,29 @@ class Game:
         current_player = self.current_player()
         # верхняя карта отбоя
         top = self.heap.top()
+        # Top: r4
+        print(str(self.heap))
         # игрок пытается сыграть карту на отбой
         card = current_player.get_playable_card(top)
+        # Bob: r3 r5
+        print(current_player)
         if card is not None:
+            print(f'Играет {card}')
             self.heap.add(card)
         else:
             # Если подходящей карты нет, берет карту из колоды
+            print('Берет карту из колоды')
             card = self.deck.draw()
             # Если она подходит, сразу ее играет
             if card.playable(top):
+                print(f'Играет {card}')
                 self.heap.add(card)
+            else:
+                print('Пас!')
+
+        # после розыгрыша карт печатаем руку игрока и разделитель
+        print(current_player)
+        print('-'*20)
 
         # если все карты с руки сыграны, игра окончена
         if current_player.no_cards():

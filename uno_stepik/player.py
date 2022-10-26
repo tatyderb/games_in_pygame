@@ -23,7 +23,9 @@ class Player:
         playable_cards = self.hand.playable_cards(top)
         if not playable_cards:
             return None
-        return playable_cards[0]
+        card = playable_cards[0]
+        self.hand.remove(card)
+        return card
 
     def no_cards(self) -> bool:
         """ True, если в руке нет карт. """

@@ -47,3 +47,6 @@ class Hand(CardList):
 
     def playable_cards(self, top: Card) -> list[Card]:
         return [card for card in self.cards if card.playable(top)]
+
+    def remove(self, card: Card):
+        self.cards.remove(card)

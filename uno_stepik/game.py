@@ -67,10 +67,10 @@ class Game:
         top = self.heap.top()
         # Top: r4
         print(str(self.heap))
-        # игрок пытается сыграть карту на отбой
-        card = current_player.get_playable_card(top)
         # Bob: r3 r5
         print(current_player)
+        # игрок пытается сыграть карту на отбой
+        card = current_player.get_playable_card(top)
         if card is not None:
             print(f'Играет {card}')
             self.heap.add(card)
@@ -100,7 +100,7 @@ class Game:
         return True
 
     def congratulation_winner(self):
-        pass
+        print(f'Поздравляем, {self.current_player().name} выиграл!')
 
     def current_player(self) -> Player:
         """ Текущий игрок. """

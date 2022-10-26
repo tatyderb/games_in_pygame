@@ -70,3 +70,12 @@ def test_hand():
 
     # нельзя играть ни одной
     assert repr(hand.playable_cards(Card('blue', 0))) == '[]'
+
+
+def test_hand_remove_card():
+    init_str = 'r3 g5 r7 y5'
+    hand = Hand(Card.list_from_str(init_str))
+    hand.remove(Card('green', 5))
+
+    # можно играть всю руку
+    assert repr(hand) == 'r3 r7 y5'

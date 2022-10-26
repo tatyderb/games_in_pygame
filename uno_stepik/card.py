@@ -41,3 +41,6 @@ class Card:
         """ Из строки 'r3 y5 g0' делает [Card('red', 3), Card('yellow', 5), Card('green', 0)] """
         return [Card.create(s) for s in text.split()]
 
+    @classmethod
+    def all_cards(cls, colors=COLORS, numbers=NUMBERS) -> list[Card]:
+        return [Card(color, number) for color in colors for number in numbers]

@@ -1,6 +1,9 @@
 # Правила игры UNO
 
-https://www.mosigra.ru/image/data/mosigra.product.other/545/534/uno_new.pdf
+* [правила игры](https://www.mosigra.ru/image/data/mosigra.product.other/545/534/uno_new.pdf)
+* [обзор на youtube](https://www.youtube.com/watch?v=sA5CtiLiD7M) Ru
+* [youtube review En](https://www.youtube.com/watch?v=sWoSZmHsCls)
+
 
 ## Колода (Deck)
 

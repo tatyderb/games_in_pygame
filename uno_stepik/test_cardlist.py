@@ -79,3 +79,19 @@ def test_hand_remove_card():
 
     # можно играть всю руку
     assert repr(hand) == 'r3 r7 y5'
+
+
+def test_deck_shuffle():
+    # Карты в другом порядке, но те же самые
+
+    init_str = 'r3 g5 r7 y5 b1'
+    deck = Deck(Card.list_from_str(init_str))
+    deck.shuffle()
+    assert repr(deck) != init_str
+
+    def sorted_cards(repr_str: str):
+        """ Сортирует карты в строке вида 'r4 b5 g1' и возвращает отсортированный список коротких обозначений """
+        words = repr_str.split()
+        return sorted(words)
+
+    assert sorted_cards(repr(deck)) == sorted_cards(init_str)

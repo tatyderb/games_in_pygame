@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import random
+
+import rand as rand
+
 from uno_stepik.card import Card
 
 
@@ -27,6 +31,9 @@ class Deck(CardList):
         card = self.cards[0]
         self.cards = self.cards[1:]
         return card
+
+    def shuffle(self):
+        random.shuffle(self.cards)
 
 
 class Heap(CardList):

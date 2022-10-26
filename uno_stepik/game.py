@@ -8,6 +8,9 @@ from uno_stepik.player import Player
 
 
 class Game:
+    # сколько карт у каждого игрока в начале игры
+    HAND_SIZE = 7
+
     def __init__(self):
         self.deck = None  # колода
         self.heap = None  # отбой
@@ -17,7 +20,27 @@ class Game:
     @staticmethod
     def create(name_list: list[str], cards: list[Card] | None = None) -> Game:
         """ Создает новую игру с игроками из name_list и картами cards"""
-        pass
+        game = Game()
+
+        # если карты не даны, берем всю колоду
+        if cards is None:
+            game.deck = Deck(Card.all_cards())
+            game.deck.shuffle()
+        else:
+            game.deck = Deck(cards)
+
+        print('Deck: ' + repr(game.deck))
+
+        # создаем игроков и раздаем им по HAND_SIZE карт
+        game.players = [Player(name, [game.deck.draw() for _ in range(Game.HAND_SIZE)]) for name in name_list]
+
+        # первым ходит первый игрок
+        game.player_index = 0
+
+        # кладем первую карту отбоя
+        game.heap = Heap([game.deck.draw()])
+
+        return game
 
     @staticmethod
     def load(state: dict) -> Game:
@@ -128,8 +151,8 @@ game_state = {
     'player_index': 0
 }
 # или создаем новую игру
-# game = Game.create(['Bob', 'Charley'])
+game = Game.create(['Bob', 'Charley'])
 # или загружаем состояние игры из game_state
-game = Game.load(game_state)
+# game = Game.load(game_state)
 print(json.dumps(game.save(), indent=4))
 game.run()

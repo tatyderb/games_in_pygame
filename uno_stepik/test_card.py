@@ -64,3 +64,8 @@ def test_playable():
     assert card.playable(Card('red', 8))
     assert card.playable(Card('blue', 4))
     assert not card.playable(Card('blue', 8))
+
+
+def test_all_cards():
+    cl = Card.all_cards(['red', 'blue'], [1, 3, 7])
+    assert repr(cl) == '[r1, r3, r7, b1, b3, b7]'

@@ -5,28 +5,28 @@ import random
 
 class CardList:
 
-    def __init__(self, cards: list):
+    def __init__(self, cards: list[Card]):
         self.cards = cards
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         # h, m, s = '12:05:33'.split(':')
         # s = ':'.join(['12', '05', '33'])    # s = '12:05:33'
         s = ' '.join([str(card) for card in self.cards])
         return s
 
-    def add(self, card: Card):
+    def add(self, card: Card) -> None:
         self.cards.append(card)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.cards)
 
 
 class Deck(CardList):
     """Колода карт UNO"""
-    def __init__(self, cards: list):
+    def __init__(self, cards: list[Card]):
         super().__init__(cards)
 
-    def draw(self, size=1):
+    def draw(self, size: int = 1) -> list[Card]:
         """Возвращает или список карт длины size, или одну карту, если size=1.
         Эти карты удаляются из колоды.
         """
@@ -37,21 +37,21 @@ class Deck(CardList):
             out = out[0]
         return out
 
-    def shuffle(self):
+    def shuffle(self) -> None:
         """Перемешивает колоду"""
         random.shuffle(self.cards)
 
 
 class Heap(CardList):
     """Сброс, верхняя карта (последняя в списке) открыта"""
-    def __init__(self, cards):
+    def __init__(self, cards: list[Card]):
         super().__init__(cards)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str(heap)"""
         return f'Top: {self.top()}'
 
-    def top(self):
+    def top(self) -> Card:
         return self.cards[-1]
 
 
@@ -60,10 +60,10 @@ class Hand(CardList):
     def __init__(self, cards):
         super().__init__(cards)
 
-    def remove(self, removable_card):
+    def remove(self, removable_card: Card) -> None:
         """Удалить карту с руки removable_card"""
         self.cards.remove(removable_card)
 
-    def playable_list(self, top) -> list:
+    def playable_list(self, top: Card) -> list[Card]:
         """Возвращает список карт, подходящих для игры на top"""
         return [card for card in self.cards if card.playable(top)]

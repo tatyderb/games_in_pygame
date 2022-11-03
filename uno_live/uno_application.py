@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 
 from cardlist import Deck, Heap, Hand
@@ -8,23 +9,30 @@ from player import Player
 class UnoGame:
     DEFAULT_HAND_SIZE = 7
 
+    class State:
+        PLAY_CARD = 'PLAY_CARD'     # начало хода игрока: DRAW_CARD | NEXT_PLAYER
+        DRAW_CARD = 'DRAW_CARD'     # карты подходящей нет, берем из колоды: PLAY_CARD_AGAIN
+        PLAY_CARD_AGAIN = 'PLAY_CARD_AGAIN' # взяли карту из колоды, пытаемся играть: NEXT_PLAYER
+        NEXT_PLAYER = 'NEXT_PLAYER' # ход игрока закончен, идем к следующему игроку или заканчиваем игру: PLAY_CARD | END
+        END = 'END'                 # игра закончена
+
     def __init__(self):
         self.players = None
         self.player_index = None
         self.player_size = None
         self.deck = None
         self.heap = None
+        self.state = None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '\n'.join([
             repr(self.deck),
             repr(self.heap),
             str(self.player_index)
         ])
 
-
     @staticmethod
-    def create(player_names: list, hand_size: int = DEFAULT_HAND_SIZE, deck: Deck | None = None):
+    def create(player_names: list[str], hand_size: int = DEFAULT_HAND_SIZE, deck: Deck | None = None) -> UnoGame:
         """Подготовка к игре:
         * Каждому игроку сдается 7 карт
         * 1 карта открывается и начинает сброс.
@@ -40,9 +48,10 @@ class UnoGame:
         game.player_index = 0
         game.player_size = len(game.players)
         game.heap = Heap([game.deck.draw(1)])
+        game.state = UnoGame.State.PLAY_CARD
         return game
 
-    def run(self):
+    def run(self) -> None:
         """Сама игра в процессе до конца
         """
         is_active = True
@@ -50,7 +59,7 @@ class UnoGame:
             is_active = self.turn()
         self.congratulation_winner()
 
-    def turn(self):
+    def turn(self) -> bool:
         """
         Ход игрока:
         * Положи одну карту из руки подходящего цвета или номера или действия.
@@ -94,14 +103,27 @@ class UnoGame:
         # игра продолжается
         return True
 
-    def congratulation_winner(self):
+    def model_update(self):
+        """ Это turn, но через модель состояний. """
+        top = self.heap.top()
+        current = self.current_player()
+
+        if self.state == UnoGame.State.PLAY_CARD:
+            print(str(top))
+            print(current)
+            card = current.get_payable_card(top)  # убирать карту card из руки
+
+
+
+
+    def congratulation_winner(self) -> None:
         print(f'Игрок {self.current_player().name} победил!')
 
-    def current_player(self):
+    def current_player(self) -> Player:
         return self.players[self.player_index]
 
     @staticmethod
-    def load(gs: dict):
+    def load(gs: dict) -> UnoGame:
         """
         load game from dict
         game_state = {
@@ -127,9 +149,10 @@ class UnoGame:
         game.player_index = gs['player_index']
         game.players = [Player(data['name'], Card.list_from_str(data['hand'])) for data in gs['players']]
         game.player_size = len(game.players)
+        game.state = UnoGame.State.PLAY_CARD
         return game
 
-    def save(self):
+    def save(self) -> dict:
         return {
             'player_index': self.player_index,
             'players': [{'name': p.name, 'hand': repr(p.hand)} for p in self.players],
@@ -138,6 +161,10 @@ class UnoGame:
         }
 
         # r3 r5 - Alice
+
+    def model_update_loop(self):
+        while self.state != UnoGame.State.END:
+            self.model_update()
 
 
 # b1 g2 - Bob
@@ -164,8 +191,8 @@ game_state = {
     'deck': 'y9 r9 y0 y1'
 }
 
-app = UnoGame.create(['Charly', 'Bob', 'Olga', 'Natasha'])
-#app = UnoGame.load(game_state)
+# app = UnoGame.create(['Charly', 'Bob', 'Olga', 'Natasha'])
+app = UnoGame.load(game_state)
 # print(app)
 print(json.dumps(app.save(), indent=4))
 app.run()

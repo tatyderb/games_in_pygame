@@ -94,27 +94,77 @@ class UnoGame:
             # текущий игрок сборосил все карты, игра закончена
             return False
 
+        # игра продолжается
+        self.next_player()
+        return True
+
+    def next_player(self):
         # ход переходит другому игроку
         # 2: 0 1 0 1 0 1
         # 3:  0 1 2 0 1 2 0 1 2
         # +1: 0 1 2 3 4 5 6 7 8
         # %3: 0 1 2 0 1 2 0 1 2
         self.player_index = (self.player_index + 1) % self.player_size
-        # игра продолжается
-        return True
+
 
     def model_update(self):
         """ Это turn, но через модель состояний. """
         top = self.heap.top()
         current = self.current_player()
 
+        # начало хода, или играем карту или не можем ее играть
         if self.state == UnoGame.State.PLAY_CARD:
             print(str(top))
             print(current)
             card = current.get_payable_card(top)  # убирать карту card из руки
+            if card is None:
+                print(f'{current.name} пас')
+                self.state = UnoGame.State.DRAW_CARD
+            else:
+                print(f'Play {card}')
+                self.heap.add(card)
+                print(current)
+                self.state = UnoGame.State.NEXT_PLAYER
+            print(f'{self.state=}')
+            return card
 
+        # надо взять карту из колоды
+        if self.state == UnoGame.State.DRAW_CARD:
+            # Если подходящей карты нет, возьми карту из колоды в закрытую.
+            print('Pass! Берем карту из колоды.')
+            card = self.deck.draw(1)
+            current.add_card(card)
+            print(f'Взяли карту {card}')
+            # * Если она подходит, её можно сразу же сыграть.
+            self.state = UnoGame.State.PLAY_CARD_AGAIN
+            print(f'{self.state=}')
+            return card
 
+        # играем карту после того, как взяли карту
+        if self.state == UnoGame.State.PLAY_CARD_AGAIN:
+            print(str(top))
+            print(current)
+            card = current.get_payable_card(top)  # убирать карту card из руки
+            if card is None:
+                print(f'{current.name} пас')
+            else:
+                print(f'Play {card}')
+                self.heap.add(card)
+                print(current)
+            self.state = UnoGame.State.NEXT_PLAYER
+            print(f'{self.state=}')
+            return card
 
+        # следующий игрок
+        if self.state == UnoGame.State.NEXT_PLAYER:
+            if len(current.hand) == 0:
+                # текущий игрок сборосил все карты, игра закончена
+                self.state = UnoGame.State.END
+            else:
+                self.next_player()
+                self.state = UnoGame.State.PLAY_CARD
+            print(f'{self.state=}')
+            return self.player_index
 
     def congratulation_winner(self) -> None:
         print(f'Игрок {self.current_player().name} победил!')
@@ -163,6 +213,7 @@ class UnoGame:
         # r3 r5 - Alice
 
     def model_update_loop(self):
+        """ Замена run()"""
         while self.state != UnoGame.State.END:
             self.model_update()
 
@@ -195,4 +246,5 @@ game_state = {
 app = UnoGame.load(game_state)
 # print(app)
 print(json.dumps(app.save(), indent=4))
-app.run()
+#  app.run()
+app.model_update_loop()

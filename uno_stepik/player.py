@@ -18,13 +18,20 @@ class Player:
             'hand': repr(self.hand)
         }
 
+    def has_playable_card(self, top: Card) -> list(Card):
+        """ Проверяем, есть ли на руке подходящие для игры на top карты. """
+        return self.hand.playable_cards(top)
+
+    def play_card(self, card: Card):
+        """ Играется карта card с руки."""
+        self.hand.remove(card)
+
     def get_playable_card(self, top: Card) -> Card | None:
-        """ Возвращаем первую подходящую карту для игры на top или None, если подходящих карт нет. """
+        """ AI only: Возвращаем первую подходящую карту для игры на top или None, если подходящих карт нет. """
         playable_cards = self.hand.playable_cards(top)
         if not playable_cards:
             return None
         card = playable_cards[0]
-        self.hand.remove(card)
         return card
 
     def no_cards(self) -> bool:

@@ -8,6 +8,13 @@ from uno_stepik.player import Player
 
 
 class Game:
+    class State:
+        TURN_BEGIN = 'TURN_BEGIN'
+        PLAY_CARD = 'PLAY_CARD'
+        DRAW_CARD = 'DRAW_CARD'
+        NEXT_PLAYER = 'NEXT_PLAYER'
+        END = 'END'
+
     # сколько карт у каждого игрока в начале игры
     HAND_SIZE = 7
 
@@ -16,6 +23,7 @@ class Game:
         self.heap = None  # отбой
         self.players = None  # игроки
         self.player_index = None  # индекс текущего игрока
+        self.state = Game.State.TURN_BEGIN
 
     @staticmethod
     def create(name_list: list[str], cards: list[Card] | None = None) -> Game:
@@ -77,6 +85,85 @@ class Game:
         }
 
     def run(self):
+        """ Новый run через состояния модели. """
+        while self.state != Game.State.END:
+            self.model_update()
+        self.congratulation_winner()
+
+    def draw_card(self):
+        """ Берем карту из колоды, меняем состояние игры в зависимости от карты."""
+        print('Pass! Берем карту из колоды.')
+        current_player = self.current_player()
+        card = self.deck.draw()
+        current_player.add_card_to_hand(card)
+        print(f'Взяли карту {card}')
+        # * Если она подходит, её можно сразу же сыграть.
+        if current_player.has_playable_card(self.heap.top()):
+            self.state = Game.State.PLAY_CARD
+        else:
+            print(f'{current_player.name} пас')
+            self.state = Game.State.NEXT_PLAYER
+        print(f'{self.state=}')
+
+    def play_card(self, card: Card = None):
+        """ Играем карту card с руки в отбой, если карта None, это AI и пусть сам решает что играет."""
+        if card is None:
+            card = self.current_player().get_playable_card(self.heap.top())
+        print(f'Play {card}')
+        self.current_player().play_card(card)
+        self.heap.add(card)
+        print(self.current_player())
+        self.state = Game.State.NEXT_PLAYER
+        print(f'{self.state=}')
+
+    def model_update(self):
+        """ Подумать, надо ли что возвращать и зачем."""
+
+        # игрок, чей сейчас ход
+        current_player = self.current_player()
+        # верхняя карта отбоя
+        top = self.heap.top()
+
+        # игра закончена, дальше ничего меняться не будет
+        # @TODO если реализуем новую игру после окончания, менять тут
+        if self.state == Game.State.END:
+            return
+
+        # следующий игрок, обрабатываем статус строго первым,
+        # дальше если интерактивный игрок, то модель меняется не тут!
+        if self.state == Game.State.NEXT_PLAYER:
+            if len(current_player.hand) == 0:
+                # текущий игрок сбросил все карты, игра закончена
+                self.state = Game.State.END
+            else:
+                self.next_player()
+                self.state = Game.State.TURN_BEGIN
+            print(f'{self.state=}')
+            return
+
+        # начало хода, или играем карту, или не можем ее играть
+        if self.state == Game.State.TURN_BEGIN:
+            print(str(top))
+            print(current_player)
+            if current_player.has_playable_card(top):
+                self.state = Game.State.PLAY_CARD
+            else:
+                self.state = Game.State.DRAW_CARD
+            print(f'{self.state=}')
+            return
+
+        # надо взять карту из колоды
+        if self.state == Game.State.DRAW_CARD:
+            # Если подходящей карты нет, возьми карту из колоды в закрытую.
+            self.draw_card()
+            return
+
+        if self.state == Game.State.PLAY_CARD:
+            self.play_card()
+            return
+
+    def run_old(self):
+        """Старый run через turn() """
         is_running = True
         while is_running:
             is_running = self.turn()

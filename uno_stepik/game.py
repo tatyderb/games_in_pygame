@@ -222,6 +222,7 @@ class Game:
         self.player_index = (self.player_index + 1) % size
 
 
+'''
 game_state = {
     'deck': 'y9 r9 y0 y1',
     'heap': 'y1 b1 b4 r4',
@@ -243,3 +244,4 @@ game = Game.create(['Bob', 'Charley'])
 # game = Game.load(game_state)
 print(json.dumps(game.save(), indent=4))
 game.run()
+'''

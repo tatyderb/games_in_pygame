@@ -31,9 +31,13 @@ class CardView:
 
         # если рубашка еще не загружена, сделать изображение рубашки
         if CardView.back_img is None:
-            filename = RSC['img']['back']
-            img = pygame.image.load(filename)
-            CardView.back_img = pygame.transform.scale(img, self.size)
+            CardView.back_img = CardView.create_back_image()
+
+    @classmethod
+    def create_back_image(cls):
+        filename = RSC['img']['back']
+        img = pygame.image.load(filename)
+        return pygame.transform.scale(img, cls.size)
 
     def __repr__(self):
         return f'{self.card}{self.pos}'
@@ -81,6 +85,12 @@ class CardView:
                 display.blit(self.img, (self.x, self.y))
             else:
                 raise ValueError('Unknown card should be draw')
+
+    @classmethod
+    def redraw_cover(cls, display: pygame.Surface, x, y):
+        if cls.back_img is None:
+            cls.back_img = cls.create_back_image()
+        display.blit(cls.back_img, (x, y))
 
     def r(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)

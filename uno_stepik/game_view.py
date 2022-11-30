@@ -7,6 +7,7 @@ from uno_stepik.card_list import Heap, Deck
 from uno_stepik.card_view import CardView
 from uno_stepik.config import GEOM, RSC
 from uno_stepik.game import Game
+from uno_stepik.player_view import PlayerInteractiveView, PlayerCompactView
 
 '''
 # черновая прикидка расположения
@@ -69,12 +70,21 @@ class GameView:
         # компоненты
         self.vheap = HeapView(game.heap, TOPX, R1Y)
         self.vdeck = DeckView(game.deck, DECKX, R1Y)
+
+        # игроки, прибиты гвоздями 3 штуки
+        self.players = [
+            PlayerInteractiveView(game.players[0], PLAYERX, R2Y),
+            PlayerCompactView(game.players[1], AI1X, R0Y),
+            PlayerCompactView(game.players[2], AI2X, R0Y)
+        ]
         
     def redraw(self):
         self.display.fill((0, 81, 44), (0, 0, self.width, self.height))
         # self.cv.redraw(self.display)
         self.vheap.redraw(self.display)
         self.vdeck.redraw(self.display)
+        for p in self.players:
+            p.redraw(self.display)
         pygame.display.update()
 
     def model_update(self):
